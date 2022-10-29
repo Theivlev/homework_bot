@@ -45,7 +45,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """Отправляет сообщение в Telegram чат, 
+    """Отправляет сообщение в Telegram чат,
        определяемый переменной окружения TELEGRAM_CHAT_ID."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
@@ -94,40 +94,45 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """Извлекает из информации о конкретной домашней работе статус этой работы."""
+    """Извлекает из информации о конкретной домашней работе статус работы."""
     if len(homework) > 0:
-        logger.info(f'Передана домашняя работа')
+        logger.info('Передана домашняя работа')
         info_about_homework = homework
         homework_name = info_about_homework.get('homework_name')
         if homework_name is None:
-            logger.error(f'отсутствует ожидаемый ключ')
+            logger.error('отсутствует ожидаемый ключ')
             raise KeyError('Ключ homework_name отсутсвует')
         homework_status = info_about_homework.get('status')
         if homework_name is None:
-            logger.error(f'отсутствует ожидаемый ключ')
+            logger.error('отсутствует ожидаемый ключ')
             raise KeyError('Ключ status отсутсвует')
-        logger.info(f'Поиск текущего статуса домашней работы')
+        logger.info('Поиск текущего статуса домашней работы')
         if homework_status in HOMEWORK_STATUSES:
-                verdict = HOMEWORK_STATUSES[homework_status]
+            verdict = HOMEWORK_STATUSES[homework_status]
         else:
             logger.error(
                     f'Обнаружен недокументированный статус домашней работы'
-                    f'Статус: {homework_status}')
+                    f'Статус: {homework_status}'
+                )
             raise TypeError(
                     f'Статус домашней работы не соотвествует ожидаемому'
-                    f'Статус: {homework_status}')
+                    f'Статус: {homework_status}'
+                )
         return f'Изменился статус проверки работы "{homework_name}". {verdict}'
     return 'Домашняя работа не передана'
 
 
 def check_tokens():
-    """Проверяет доступность переменных окружения, которые необходимы для работы программы."""
+    """Проверяет доступность переменных окружения, 
+    которые необходимы для работы программы"""
     TOKENS = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in TOKENS:
-            if token is None:
-                logger.critical(f'Отсутствует обязательная переменная окружения: {token}')
-                return False
+        if token is None:
+            logger.critical(
+                f'Отсутствует обязательная переменная окружения: {token}')
+            return False
     return True
+
 
 def main():
     """Основная логика работы бота."""
