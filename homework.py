@@ -45,8 +45,9 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """Отправляет сообщение в Telegram чат,
-       определяемый переменной окружения TELEGRAM_CHAT_ID."""
+    """Отправляет сообщение в Telegram чат.
+       определяемый переменной окружения TELEGRAM_CHAT_ID.
+    """
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info(
@@ -111,20 +112,19 @@ def parse_status(homework):
             verdict = HOMEWORK_STATUSES[homework_status]
         else:
             logger.error(
-                    f'Обнаружен недокументированный статус домашней работы'
-                    f'Статус: {homework_status}'
-                )
+                f'Обнаружен недокументированный статус домашней работы: {homework_status}'
+                f'Статус: {homework_status}')
             raise TypeError(
-                    f'Статус домашней работы не соотвествует ожидаемому'
-                    f'Статус: {homework_status}'
-                )
+                f'Статус домашней работы не соотвествует ожидаемому'
+                f'Статус: {homework_status}')
         return f'Изменился статус проверки работы "{homework_name}". {verdict}'
     return 'Домашняя работа не передана'
 
 
 def check_tokens():
-    """Проверяет доступность переменных окружения, 
-    которые необходимы для работы программы"""
+    """Проверяет доступность переменных окруженияю.
+    которые необходимы для работы программы
+    """
     TOKENS = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in TOKENS:
         if token is None:
