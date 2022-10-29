@@ -46,7 +46,7 @@ HOMEWORK_STATUSES = {
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат.
-       определяемый переменной окружения TELEGRAM_CHAT_ID.
+    определяемый переменной окружения TELEGRAM_CHAT_ID.
     """
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
@@ -112,11 +112,11 @@ def parse_status(homework):
             verdict = HOMEWORK_STATUSES[homework_status]
         else:
             logger.error(
-                f'Обнаружен недокументированный статус домашней работы: {homework_status}'
-                f'Статус: {homework_status}')
+                f'Обнаружен недокументированный '
+                f'статус домашней работы: {homework_status}')
             raise TypeError(
-                f'Статус домашней работы не соотвествует ожидаемому'
-                f'Статус: {homework_status}')
+                f'Статус домашней работы не соотвествует '
+                f'ожидаемому: {homework_status}')
         return f'Изменился статус проверки работы "{homework_name}". {verdict}'
     return 'Домашняя работа не передана'
 
