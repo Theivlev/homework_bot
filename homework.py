@@ -50,7 +50,7 @@ def send_message(bot, message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info(
-            f'Отрпавка сообщения: {message}' 
+            f'Отрпавка сообщения: {message}'
             f'В чат: {TELEGRAM_CHAT_ID}')
     except Exception as error:
         logger.error(
@@ -108,7 +108,7 @@ def parse_status(homework):
             raise KeyError('Ключ status отсутсвует')
         logger.info(f'Поиск текущего статуса домашней работы')
         if homework_status in HOMEWORK_STATUSES:
-                verdict = HOMEWORK_STATUSES[homework_status]          
+                verdict = HOMEWORK_STATUSES[homework_status]
         else:
             logger.error(
                     f'Обнаружен недокументированный статус домашней работы'
