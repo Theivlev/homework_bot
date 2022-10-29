@@ -21,8 +21,7 @@ logger.setLevel(logging.INFO)
 handler = RotatingFileHandler('my_logger.log',
                               maxBytes=50000000,
                               backupCount=5,
-                              encoding='UTF-8'
-)
+                              encoding='UTF-8')
 logger.addHandler(handler)
 formatter = logging.Formatter(
     '%(asctime)s, %(levelname)s, %(message)s, %(funcName)s, %(lineno)s'
@@ -46,7 +45,8 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    '''Отправляет сообщение в Telegram чат, определяемый переменной окружения TELEGRAM_CHAT_ID'''
+    """Отправляет сообщение в Telegram чат, 
+       определяемый переменной окружения TELEGRAM_CHAT_ID."""
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info(
@@ -59,7 +59,7 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
-    '''Делает запрос к единственному эндпоинту API-сервиса.'''
+    """Делает запрос к единственному эндпоинту API-сервиса."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     homework_statuses = requests.get(ENDPOINT, headers=HEADERS, params=params)
@@ -79,22 +79,22 @@ def get_api_answer(current_timestamp):
 
 
 def check_response(response):
-    '''Проверяет ответ API на корректность.'''   
+    """Проверяет ответ API на корректность."""
     if not isinstance(response, dict):
         raise TypeError('Должен передаваться словарь')
-    logger.info(f'В функцию передан словарь')
+    logger.info('В функцию передан словарь')
     if response.get('homeworks') is None:
-        logger.error(f'отсутствует ожидаемый ключ в ответе API')
+        logger.error('отсутствует ожидаемый ключ в ответе API')
         raise KeyError('Отсутсвует ключ homeworks')
-    logger.info(f'Получен доступ по ключу homeworks')
+    logger.info('Получен доступ по ключу homeworks')
     if not isinstance(response['homeworks'], list):
         raise TypeError('Отсуствует список по ключу homeworks')
-    logger.info(f'Передан список домашних работ по ключу homeworks')
+    logger.info('Передан список домашних работ по ключу homeworks')
     return response['homeworks']
 
 
 def parse_status(homework):
-    '''Извлекает из информации о конкретной домашней работе статус этой работы.'''
+    """Извлекает из информации о конкретной домашней работе статус этой работы."""
     if len(homework) > 0:
         logger.info(f'Передана домашняя работа')
         info_about_homework = homework
@@ -121,7 +121,7 @@ def parse_status(homework):
 
 
 def check_tokens():
-    '''Проверяет доступность переменных окружения, которые необходимы для работы программы'''
+    """Проверяет доступность переменных окружения, которые необходимы для работы программы."""
     TOKENS = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in TOKENS:
             if token is None:
