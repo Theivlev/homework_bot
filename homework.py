@@ -46,6 +46,7 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
+    '''Отправляет сообщение в Telegram чат, определяемый переменной окружения TELEGRAM_CHAT_ID'''
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
         logger.info(
@@ -58,16 +59,16 @@ def send_message(bot, message):
 
 
 def get_api_answer(current_timestamp):
+    '''Делает запрос к единственному эндпоинту API-сервиса.'''
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
-    try:
-        homework_statuses = requests.get(ENDPOINT, headers=HEADERS, params=params)
-    except Exception as error:
+    homework_statuses = requests.get(ENDPOINT, headers=HEADERS, params=params)
+    if homework_statuses.status_code != HTTPStatus.OK:
         logging.error(
-            f'Ошибка при запросе к API: {error}'
+            f'Ошибка при запросе к API'
             f'Статус: {homework_statuses.status_code}')
         raise Exception(
-            f'Ошибка при запросе к основному API: {error}'
+            f'Ошибка при запросе к основному API'
             f'Статус: {homework_statuses.status_code}')
     try:
         return homework_statuses.json()
@@ -77,7 +78,8 @@ def get_api_answer(current_timestamp):
             f'Ошибка: {error}')
 
 
-def check_response(response):   
+def check_response(response):
+    '''Проверяет ответ API на корректность.'''   
     if not isinstance(response, dict):
         raise TypeError('Должен передаваться словарь')
     logger.info(f'В функцию передан словарь')
@@ -89,14 +91,13 @@ def check_response(response):
         raise TypeError('Отсуствует список по ключу homeworks')
     logger.info(f'Передан список домашних работ по ключу homeworks')
     return response['homeworks']
-    
-    
 
 
 def parse_status(homework):
+    '''Извлекает из информации о конкретной домашней работе статус этой работы.'''
     if len(homework) > 0:
         logger.info(f'Передана домашняя работа')
-        info_about_homework = homework[0]
+        info_about_homework = homework
         homework_name = info_about_homework.get('homework_name')
         if homework_name is None:
             logger.error(f'отсутствует ожидаемый ключ')
@@ -120,6 +121,7 @@ def parse_status(homework):
 
 
 def check_tokens():
+    '''Проверяет доступность переменных окружения, которые необходимы для работы программы'''
     TOKENS = [PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]
     for token in TOKENS:
             if token is None:
