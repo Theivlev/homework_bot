@@ -9,7 +9,8 @@ import requests
 import telegram
 from dotenv import load_dotenv
 
-from exception import JSON, HOMEWORKSTATUS, TelegramError
+from exception import HOMEWORKSTATUS, JSON, TelegramError
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
