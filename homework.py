@@ -83,13 +83,16 @@ def parse_status(homework):
     """Извлекает из информации о конкретной домашней работе статус работы."""
     logger.info('Начала подготовки данных')
     if len(homework) > 0:
-        logger.info('Передана домашняя работа')
-        info_about_homework = homework
+        logger.info('Передача домашней работы')
+        if isinstance(homework, list):
+            info_about_homework = homework[0]
+        else:
+            info_about_homework = homework
         homework_name = info_about_homework.get('homework_name')
         if homework_name is None:
             raise KeyError('Ключ homework_name отсутсвует')
         homework_status = info_about_homework.get('status')
-        if homework_name is None:
+        if homework_status is None:
             raise KeyError('Ключ status отсутсвует')
         logger.info('Поиск текущего статуса домашней работы')
         if homework_status in HOMEWORK_VERDICT:
