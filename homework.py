@@ -121,34 +121,17 @@ def main():
         bot = telegram.Bot(token=TELEGRAM_TOKEN)
     except Exception as error:
         raise error
-    try:
-        current_timestamp = int(time.time())
-        replay = get_api_answer(current_timestamp)
-        homework_info = check_response(replay)
-    except KeyError as error:
-        logger.error(f'Отсутствует ожидаемый ключ: {error}')
-    except TypeError as error:
-        logger.error(f'Передан неверный тип данных: {error}')
-    except ConnectionError as error:
-        logger.error(f'Ошибка при запросе к API: {error}')
-    except JSON as error:
-        logger.error(f'Ошибка ответа формата json: {error}')
     while True:
         try:
+            current_timestamp = int(time.time())
+            replay = get_api_answer(current_timestamp)
+            homework_info = check_response(replay)
             response = homework_info
             send_message(bot, parse_status(response))
             current_timestamp = replay.get('current_date')
-        except HOMEWORKSTATUS as error:
-            logger.error(
-                f'Обнаружен недокументированный '
-                f'статус домашней работы: {error}')
-        except TelegramError as error:
-            logger.error(
-                f'Не удалось отправить сообщение в чат'
-                f'Ошибка: {error} ')
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
-            send_message(bot, message)
+            logger.error(message, exc_info=True)
         finally:
             time.sleep(RETRY_TIME)
 
