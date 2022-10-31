@@ -3,7 +3,6 @@ import os
 import sys
 import time
 from http import HTTPStatus
-from logging.handlers import RotatingFileHandler
 
 import requests
 import telegram
@@ -120,6 +119,7 @@ def main():
     try:
         bot = telegram.Bot(token=TELEGRAM_TOKEN)
     except Exception as error:
+        logger.error(error)
         raise error
     while True:
         try:
@@ -129,6 +129,12 @@ def main():
             response = homework_info
             send_message(bot, parse_status(response))
             current_timestamp = replay.get('current_date')
+        except HOMEWORKSTATUS as error:
+            logger.error(error)
+        except TelegramError as error:
+            logger.error(error)
+        except JSON as error:
+            logger.error(error)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             logger.error(message, exc_info=True)
@@ -137,16 +143,15 @@ def main():
 
 
 if __name__ == '__main__':
-    logger.setLevel(logging.INFO)
-    handler = RotatingFileHandler(
-        'my_logger.log',
-        maxBytes=50000000,
-        backupCount=5,
-        encoding='UTF-8'
+    logging.basicConfig(
+        level=logging.INFO,
+        format=(
+            '%(asctime)s [%(levelname)s] - '
+            '(%(filename)s).%(funcName)s:%(lineno)d - %(message)s'
+        ),
+        handlers=[
+            logging.FileHandler('my_logger.log'),
+            logging.StreamHandler(sys.stdout)
+        ]
     )
-    logger.addHandler(handler)
-    formatter = logging.Formatter(
-        '%(asctime)s, %(levelname)s, %(message)s, %(funcName)s, %(lineno)s'
-    )
-    handler.setFormatter(formatter)
     main()
